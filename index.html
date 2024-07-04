@@ -86,16 +86,22 @@ function generateEmail() {
     var inputText = emailContent.replace(/\n/g, '<br>\n');
 	
 	const parsedText = parseDetails(inputText);
+    
+    console.log(parsedText);
+
     const htmlContent = createHTML(parsedText);
+
     document.getElementById('content').innerHTML = htmlContent;
 	document.getElementById('content').style.display = 'block';
 	
     // Use the Clipboard API to copy the content
+    /*
     navigator.clipboard.writeText(htmlContent).then(function() {
         alert('Content copied to clipboard');
     }).catch(function(error) {
         alert('Failed to copy content: ' + error);
     });
+    */
 }
 
 function parseDetails(text) {
