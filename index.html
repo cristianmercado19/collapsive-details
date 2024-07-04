@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Collapsible Details</title>
+<style>
+    html, body { 
+		font-family: Arial, sans-serif; line-height: 1.6; 
+		height: 100%;
+        margin: 0;
+		display: flex;
+		flex-direction: row;
+		align-items: stretch;
+	}
+	
+	.column-container {
+		display: flex;   
+		flex-direction: column;
+	}	
+	
+    .clickable { 
+		cursor: pointer; display: inline; text-decoration: underline;
+	}
+													 
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 50%;
+        left: 50%;
+        margin-left: -60px;
+    }
+    .tooltip:hover .tooltiptext { visibility: visible; }
+    .level-0 { color: #000000; } 
+    .level-1 { color: #0047AB; } /* Dark blue for level 1 */
+    .level-2 { color: #DC143C; } /* Forest green for level 2 */
+    .level-3 { color: #808000; } /* Teal for level 3 and beyond */
+    .level-4, .level-5, .level-6 { color: #7851A9; } /* Purple for deeper levels */
+	
+    textarea {
+        padding: 10px;
+        margin: 10px;
+		height: 40%;
+		width: 800px;
+    }
+	
+    button {
+        width: 150px;
+        padding: 10px;
+        margin: 10px auto;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+	
+    button:hover {
+        background-color: #45a049;
+    }
+</style>
+</head>
+<body>
+
+	<div class="column-container"> 
+		<textarea id="emailContent"></textarea>
+		<button onclick="generateEmail()">Generate</button>
+	</div>
+	
+	<div id="content"></div>
+
+<script>
+
+function generateEmail() {
+	const textArea = document.getElementById('emailContent')
+    const emailContent = textArea.value;
+    var inputText = emailContent.replace(/\n/g, '<br>\n');
+	
+	const parsedText = parseDetails(inputText);
+    const htmlContent = createHTML(parsedText);
+    document.getElementById('content').innerHTML = htmlContent;
+	document.getElementById('content').style.display = 'block';
+	
+    // Use the Clipboard API to copy the content
+    navigator.clipboard.writeText(htmlContent).then(function() {
+        alert('Content copied to clipboard');
+    }).catch(function(error) {
+        alert('Failed to copy content: ' + error);
+    });
+}
+
+function parseDetails(text) {
+    const stack = [];
+    let currentText = '';
+    let depth = 0;
+
+    for (let i = 0; i < text.length; i++) {
+        if (text[i] === '{') {
+            if (depth === 0) {
+                stack.push(currentText.trim());
+                currentText = '';
+            } else {
+                currentText += '{';
+            }
+            depth++;
+        } else if (text[i] === '}') {
+            depth--;
+            if (depth === 0) {
+                stack.push(parseDetails(currentText));
+                currentText = '';
+            } else {
+                currentText += '}';
+            }
+        } else {
+            currentText += text[i];
+        }
+    }
+    if (currentText) stack.push(currentText.trim());
+
+    return stack;
+}
+
+function indexOfLastWord(htmlString) {
+    // Remove HTML tags to isolate the text content
+    const textContent = htmlString.replace(/<[^>]*>/g, "");
+    
+    // Find the last word in the text content
+    const words = textContent.trim().split(/\s+/);
+
+    const lastWord = words.pop();
+
+    // Find the index of the last word within the original HTML string
+    // Search from the end to ensure we get the last occurrence in case the word repeats
+    const lastWordPosition = htmlString.lastIndexOf(lastWord);
+
+    return lastWordPosition;
+}
+
+function createHTML(parsed, level = 0) {
+    if (typeof parsed === 'string') { 
+		return `<span class="level-${level}">${parsed}</span>`;
+	}
+
+    const result = [];
+    for (let i = 0; i < parsed.length; i++) {
+        if (Array.isArray(parsed[i])) {
+            const triggerWord = result.pop();
+            const lastSpaceIndex = indexOfLastWord(triggerWord);
+            const lastWord = triggerWord.substring(lastSpaceIndex);
+            const beforeLastWord = triggerWord.substring(0, lastSpaceIndex - 1);
+            result.push(
+                `<span class="level-${level}">${beforeLastWord} </span>
+				<span class="clickable tooltip level-${level+1}" onclick="toggleDetail(this,'detail-${level}-${i}')" title="more details">
+                    ${lastWord}
+                </span>
+                <div id="detail-${level}-${i}" class="detail" style="display:none; margin-left: ${20 * (level + 1)}px;">
+                    ${createHTML(parsed[i], level + 1)}
+                </div>`
+            );
+        } else {
+            result.push(`<span class="level-${level}">${parsed[i]}</span>`);
+        }
+    }
+    return result.join('');
+}
+
+function toggleDetail(element, detailId) {
+    const detailElement = document.getElementById(detailId);
+	
+    if (detailElement.style.display === 'none') {
+        detailElement.style.display = 'block';
+    } else {
+        detailElement.style.display = 'none';
+    }
+}
+
+</script>
+</body>
+</html>
