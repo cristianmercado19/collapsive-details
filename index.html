@@ -89,13 +89,12 @@ function generateEmail() {
     
     console.log(parsedText);
 
-    const htmlContent = createHTML(parsedText);
+    const htmlContent = processHtml(parsedText);
 
     document.getElementById('content').innerHTML = htmlContent;
 	document.getElementById('content').style.display = 'block';
 	
-
-    //   Use the Clipboard API to copy the content
+    // Use the Clipboard API to copy the content
     /*
     navigator.clipboard.writeText(htmlContent).then(function() {
         alert('Content copied to clipboard');
@@ -138,7 +137,7 @@ function parseDetails(text) {
 
 
 
-function createHTML(arrayText, level = 0) {
+function processHtml(arrayText, level = 0) {
     const result = [];
 
     for (let i = 0; i < arrayText.length; i++) {
