@@ -172,6 +172,7 @@ function processHtml(arrayText, level = 0) {
                 const detailsHtml = createHtmlDetails(subDetailsHtml, level, i);
 
                 result.push(detailsHtml);
+                level++; // Increment to skip the next as it's already processed
                 i++; // Increment to skip the next as it's already processed
             } else {
                 const text = createSimpleHtml(toAnalyze, level);
@@ -207,8 +208,6 @@ function toggleDetail(detailId) {
     const detailElement = document.getElementById(detailId);
     detailElement.style.display = (detailElement.style.display === 'none' ? 'block' : 'none');
 }
-
-
 
 </script>
 </body>
