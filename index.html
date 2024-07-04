@@ -135,58 +135,64 @@ function parseDetails(text) {
     return stack;
 }
 
-function indexOfLastWord(htmlString) {
-    // Remove HTML tags to isolate the text content
-    const textContent = htmlString.replace(/<[^>]*>/g, "");
-    
-    // Find the last word in the text content
-    const words = textContent.trim().split(/\s+/);
 
-    const lastWord = words.pop();
 
-    // Find the index of the last word within the original HTML string
-    // Search from the end to ensure we get the last occurrence in case the word repeats
-    const lastWordPosition = htmlString.lastIndexOf(lastWord);
-
-    return lastWordPosition;
-}
-
-function createHTML(parsed, level = 0) {
-    if (typeof parsed === 'string') { 
-		return `<span class="level-${level}">${parsed}</span>`;
-	}
-
+function processHtml(arrayText, level = 0) {
     const result = [];
-    for (let i = 0; i < parsed.length; i++) {
-        if (Array.isArray(parsed[i])) {
-            const triggerWord = result.pop();
-            const lastSpaceIndex = indexOfLastWord(triggerWord);
-            const lastWord = triggerWord.substring(lastSpaceIndex);
-            const beforeLastWord = triggerWord.substring(0, lastSpaceIndex - 1);
-            result.push(
-                `<span class="level-${level}">${beforeLastWord} </span>
-				<span class="clickable tooltip level-${level+1}" onclick="toggleDetail(this,'detail-${level}-${i}')" title="more details">
-                    ${lastWord}
-                </span>
-                <div id="detail-${level}-${i}" class="detail" style="display:none; margin-left: ${20 * (level + 1)}px;">
-                    ${createHTML(parsed[i], level + 1)}
-                </div>`
-            );
+
+    for (let i = 0; i < arrayText.length; i++) {
+        const toAnalyze = arrayText[i];
+
+        if (Array.isArray(toAnalyze)) {
+            // Skip processing here, it will be handled as details for the previous item
         } else {
-            result.push(`<span class="level-${level}">${parsed[i]}</span>`);
+            const nextToAnalyze = arrayText[i + 1];
+            const thereIsNextLevel = Array.isArray(nextToAnalyze);
+
+            if (thereIsNextLevel) {
+                const splitWords = splitLastWord(toAnalyze);
+                const allWordsExceptLastone = splitWords[0];
+                const lastWord = splitWords[1];
+
+                const textNoClickable = createSimpleHtml(allWordsExceptLastone, level);
+                result.push(textNoClickable);
+
+                const clickableWord = createClickHtml(lastWord, level, i);
+                result.push(clickableWord);
+
+                // Process the next level and add the details container
+                const detailsHtml = processHtml(nextToAnalyze, level + 1);
+                result.push(`<div id="detail-${level}-${i}" class="detail" style="display:none; margin-left: ${20 * (level + 1)}px;">${detailsHtml}</div>`);
+                i++; // Increment to skip the next as it's already processed
+            } else {
+                const text = createSimpleHtml(toAnalyze, level);
+                result.push(text);
+            }
         }
     }
-    return result.join('');
+
+    return result.join("");
 }
 
-function toggleDetail(element, detailId) {
+function createClickHtml(text, level, index) {
+    return `<span class="clickable tooltip level-${level}" onclick="toggleDetail('detail-${level}-${index}')" title="more details">${text}</span>`;
+}
+
+function splitLastWord(anyString) {
+    let words = anyString.split(" ");
+    let lastWord = words.pop();
+    let remainingWords = words.join(" ");
+    return [remainingWords, lastWord];
+}
+
+function createSimpleHtml(text, level) {
+    return `<span class="level-${level}">${text}</span>`;
+}
+
+// Toggle visibility of details
+function toggleDetail(detailId) {
     const detailElement = document.getElementById(detailId);
-	
-    if (detailElement.style.display === 'none') {
-        detailElement.style.display = 'block';
-    } else {
-        detailElement.style.display = 'none';
-    }
+    detailElement.style.display = (detailElement.style.display === 'none' ? 'block' : 'none');
 }
 
 </script>
