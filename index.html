@@ -135,8 +135,6 @@ function parseDetails(text) {
     return stack;
 }
 
-
-
 function processHtml(arrayText, level = 0) {
     const result = [];
 
@@ -150,19 +148,30 @@ function processHtml(arrayText, level = 0) {
             const thereIsNextLevel = Array.isArray(nextToAnalyze);
 
             if (thereIsNextLevel) {
-                const splitWords = splitLastWord(toAnalyze);
-                const allWordsExceptLastone = splitWords[0];
-                const lastWord = splitWords[1];
+                const isOneWord = toAnalyze.split(" ").length === 1;
 
-                const textNoClickable = createSimpleHtml(allWordsExceptLastone, level);
-                result.push(textNoClickable);
+                if (isOneWord) {
+                    const lastWord = toAnalyze;
 
-                const clickableWord = createClickHtml(lastWord, level, i);
-                result.push(clickableWord);
+                    const clickableWord = createClickHtml(lastWord, level, i);
+                    result.push(clickableWord);
+                }else{
+                    const splitWords = splitLastWord(toAnalyze);
+                    const allWordsExceptLastone = splitWords[0];
+                    const lastWord = splitWords[1];
+    
+                    const textNoClickable = createSimpleHtml(allWordsExceptLastone, level);
+                    result.push(textNoClickable);
+
+                    const clickableWord = createClickHtml(lastWord, level, i);
+                    result.push(clickableWord);
+                }
 
                 // Process the next level and add the details container
-                const detailsHtml = processHtml(nextToAnalyze, level + 1);
-                result.push(`<div id="detail-${level}-${i}" class="detail" style="display:none; margin-left: ${20 * (level + 1)}px;">${detailsHtml}</div>`);
+                const subDetailsHtml = processHtml(nextToAnalyze, level + 1);
+                const detailsHtml = createHtmlDetails(subDetailsHtml, level, i);
+
+                result.push(detailsHtml);
                 i++; // Increment to skip the next as it's already processed
             } else {
                 const text = createSimpleHtml(toAnalyze, level);
@@ -172,6 +181,10 @@ function processHtml(arrayText, level = 0) {
     }
 
     return result.join("");
+}
+
+function createHtmlDetails(subDetailsHtml, level, i) {
+    return `<div id="detail-${level}-${i}" class="detail" style="display:none; margin-left: ${20 * (level + 1)}px;">${subDetailsHtml}</div>`;
 }
 
 function createClickHtml(text, level, index) {
@@ -194,6 +207,8 @@ function toggleDetail(detailId) {
     const detailElement = document.getElementById(detailId);
     detailElement.style.display = (detailElement.style.display === 'none' ? 'block' : 'none');
 }
+
+
 
 </script>
 </body>
