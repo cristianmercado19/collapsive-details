@@ -135,54 +135,53 @@ function parseDetails(text) {
     return stack;
 }
 
-function processHtml(arrayText, level = 0) {
-  const result = [];
-
-  for (let i = 0; i < arrayText.length; i++) {
-    const toAnalyze = arrayText[i];
-
-    if (Array.isArray(toAnalyze)) {
-      // Skip processing here, it will be handled as details for the previous item
-    } else {
-      const nextToAnalyze = arrayText[i + 1];
-      const hasDetails = Array.isArray(nextToAnalyze);
-
-      if (hasDetails) {
-        const isOneWord = toAnalyze.split(" ").length === 1;
-
-        if (isOneWord) {
-          const lastWord = toAnalyze;
-
-          const clickableWord = createClickHtml(lastWord, level, i);
-          result.push(clickableWord);
-        } else {
-          const splitWords = splitLastWord(toAnalyze);
-          const allWordsExceptLastone = splitWords[0];
-          const lastWord = splitWords[1];
-
-          const textNoClickable = createSimpleHtml(allWordsExceptLastone,level);
-          result.push(textNoClickable);
-
-          const clickableWord = createClickHtml(lastWord, level, i);
-          result.push(clickableWord);
-        }
-
-        // Process the next level and add the details container
-        const subDetailsHtml = processHtml(nextToAnalyze, level + 1);
-        const detailsHtml = createHtmlDetails(subDetailsHtml, level, i);
-
-        result.push(detailsHtml);
-        level++; // Increment to skip the next as it's already processed
-        i++; // Increment to skip the next as it's already processed
+function processHtml(arrayText, level = 0, indexZ = "0") {
+    const result = [];
+  
+    for (let i = 0; i < arrayText.length; i++) {
+      const toAnalyze = arrayText[i];
+  
+      if (Array.isArray(toAnalyze)) {
+        // Skip processing here, it will be handled as details for the previous item
       } else {
-        const text = createSimpleHtml(toAnalyze, level-1);
-        result.push(text);
+        const nextToAnalyze = arrayText[i + 1];
+        const hasDetails = Array.isArray(nextToAnalyze);
+  
+        if (hasDetails) {
+          const isOneWord = toAnalyze.split(" ").length === 1;
+  
+          if (isOneWord) {
+            const lastWord = toAnalyze;
+  
+            const clickableWord = createClickHtml(lastWord, level, (indexZ + "-" + i));
+            result.push(clickableWord);
+          } else {
+            const splitWords = splitLastWord(toAnalyze);
+            const allWordsExceptLastone = splitWords[0];
+            const lastWord = splitWords[1];
+  
+            const textNoClickable = createSimpleHtml(allWordsExceptLastone,level);
+            result.push(textNoClickable);
+  
+            const clickableWord = createClickHtml(lastWord, level, (indexZ + "-" + i));
+            result.push(clickableWord);
+          }
+  
+          // Process the next level and add the details container
+          const subDetailsHtml = processHtml(nextToAnalyze, level + 1, (indexZ + "-" + i));
+          const detailsHtml = createHtmlDetails(subDetailsHtml, level, (indexZ + "-" + i));
+  
+          result.push(detailsHtml);
+          i++; // Increment to skip the next as it's already processed
+        } else {
+          const text = createSimpleHtml(toAnalyze, level);
+          result.push(text);
+        }
       }
     }
+  
+    return result.join(" ");
   }
-
-  return result.join(" ");
-}
 
 function createHtmlDetails(subDetailsHtml, level, i) {
   return `<div id="detail-${level}-${i}" class="detail" style="display:none; margin-left: ${
