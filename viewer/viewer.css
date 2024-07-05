@@ -1,0 +1,7 @@
+.main {
+    flex-direction: vertical;
+}
+
+.encryption{
+    flex-direction: row;
+}

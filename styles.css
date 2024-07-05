@@ -1,0 +1,110 @@
+html,
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  height: 100%;
+  margin: 0;
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.email-container {
+  flex-direction: column;
+}
+
+.clickable {
+  cursor: pointer;
+  display: inline;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.clicked {
+  font-weight: normal;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 50%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.level-0 {
+  color: #000000;
+}
+
+.level-1 {
+  color: #0047AB;
+}
+
+/* Dark blue for level 1 */
+.level-2 {
+  color: #DC143C;
+}
+
+/* Forest green for level 2 */
+.level-3 {
+  color: #808000;
+}
+
+/* Teal for level 3 and beyond */
+.level-4,
+.level-5,
+.level-6 {
+  color: #7851A9;
+}
+
+/* Purple for deeper levels */
+
+textarea {
+  padding: 10px;
+  margin: 10px;
+  height: 40%;
+  width: 800px;
+}
+
+button {
+  width: 150px;
+  padding: 10px;
+  margin: 10px auto;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+#encrypt {
+  background-color: #b92c2c;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.email-content {
+    padding: 10px;
+}
+
+#encryptedContent {
+    height: 200px;
+}
+
+#keyInput {
+    width: 300px;
+}
