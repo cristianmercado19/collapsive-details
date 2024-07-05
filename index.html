@@ -1,216 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<title>Collapsible Details</title>
-<style>
-    html, body { 
-		font-family: Arial, sans-serif; line-height: 1.6; 
-		height: 100%;
-        margin: 0;
-		display: flex;
-		flex-direction: row;
-		align-items: stretch;
-	}
-	
-	.column-container {
-		display: flex;   
-		flex-direction: column;
-	}	
-	
-    .clickable { 
-		cursor: pointer; display: inline; text-decoration: underline;
-	}
-													 
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Collapsible Details</title>
+  <style>
+    html,
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+    }
+
+    .column-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .clickable {
+      cursor: pointer;
+      display: inline;
+      text-decoration: underline;
+      font-weight: 600;
+    }
+
+    .clicked {
+      font-weight: normal;
+    }
+
     .tooltip .tooltiptext {
-        visibility: hidden;
-        background-color: black;
-        color: #fff;
-        text-align: center;
-        border-radius: 6px;
-        padding: 5px 0;
-        position: absolute;
-        z-index: 1;
-        bottom: 50%;
-        left: 50%;
-        margin-left: -60px;
+      visibility: hidden;
+      background-color: black;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px 0;
+      position: absolute;
+      z-index: 1;
+      bottom: 50%;
+      left: 50%;
+      margin-left: -60px;
     }
-    .tooltip:hover .tooltiptext { visibility: visible; }
-    .level-0 { color: #000000; } 
-    .level-1 { color: #0047AB; } /* Dark blue for level 1 */
-    .level-2 { color: #DC143C; } /* Forest green for level 2 */
-    .level-3 { color: #808000; } /* Teal for level 3 and beyond */
-    .level-4, .level-5, .level-6 { color: #7851A9; } /* Purple for deeper levels */
-	
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+    }
+
+    .level-0 {
+      color: #000000;
+    }
+
+    .level-1 {
+      color: #0047AB;
+    }
+
+    /* Dark blue for level 1 */
+    .level-2 {
+      color: #DC143C;
+    }
+
+    /* Forest green for level 2 */
+    .level-3 {
+      color: #808000;
+    }
+
+    /* Teal for level 3 and beyond */
+    .level-4,
+    .level-5,
+    .level-6 {
+      color: #7851A9;
+    }
+
+    /* Purple for deeper levels */
+
     textarea {
-        padding: 10px;
-        margin: 10px;
-		height: 40%;
-		width: 800px;
+      padding: 10px;
+      margin: 10px;
+      height: 40%;
+      width: 800px;
     }
-	
+
     button {
-        width: 150px;
-        padding: 10px;
-        margin: 10px auto;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
+      width: 150px;
+      padding: 10px;
+      margin: 10px auto;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
     }
-	
+
     button:hover {
-        background-color: #45a049;
+      background-color: #45a049;
     }
-</style>
+  </style>
 </head>
+
 <body>
 
-	<div class="column-container"> 
-		<textarea id="emailContent"></textarea>
-		<button onclick="generateEmail()">Generate</button>
-	</div>
-	
-	<div id="content"></div>
+  <div class="column-container">
+    <textarea id="emailContent"></textarea>
+    <button onclick="generateEmail()">Generate</button>
+  </div>
 
-<script>
+  <div id="content"></div>
 
-function generateEmail() {
-	const textArea = document.getElementById('emailContent')
-    const emailContent = textArea.value;
-    var inputText = emailContent.replace(/\n/g, '<br>\n');
-	
-	const parsedText = parseDetails(inputText);
-    
-    console.log(parsedText);
+  <script>
 
-    const htmlContent = processHtml(parsedText);
+    function generateEmail() {
+      const textArea = document.getElementById('emailContent')
+      const emailContent = textArea.value;
+      var inputText = emailContent.replace(/\n/g, '<br>\n');
 
-    document.getElementById('content').innerHTML = htmlContent;
-	document.getElementById('content').style.display = 'block';
-	
-    // Use the Clipboard API to copy the content
-    /*
-    navigator.clipboard.writeText(htmlContent).then(function() {
-        alert('Content copied to clipboard');
-    }).catch(function(error) {
-        alert('Failed to copy content: ' + error);
-    });
-    */
-}
+      const parsedText = parseDetails(inputText);
 
-function parseDetails(text) {
-    const stack = [];
-    let currentText = '';
-    let depth = 0;
+      console.log(parsedText);
 
-    for (let i = 0; i < text.length; i++) {
-        if (text[i] === '{') {
-            if (depth === 0) {
-                stack.push(currentText.trim());
-                currentText = '';
-            } else {
-                currentText += '{';
-            }
-            depth++;
-        } else if (text[i] === '}') {
-            depth--;
-            if (depth === 0) {
-                stack.push(parseDetails(currentText));
-                currentText = '';
-            } else {
-                currentText += '}';
-            }
-        } else {
-            currentText += text[i];
-        }
+      const htmlContent = processHtml(parsedText);
+
+      document.getElementById('content').innerHTML = htmlContent;
+      document.getElementById('content').style.display = 'block';
+
+      // Use the Clipboard API to copy the content
+      /*
+      navigator.clipboard.writeText(htmlContent).then(function() {
+          alert('Content copied to clipboard');
+      }).catch(function(error) {
+          alert('Failed to copy content: ' + error);
+      });
+      */
     }
-    if (currentText) stack.push(currentText.trim());
 
-    return stack;
-}
+    function parseDetails(text) {
+      const stack = [];
+      let currentText = '';
+      let depth = 0;
 
-function processHtml(arrayText, level = 0, indexZ = "0") {
-    const result = [];
-  
-    for (let i = 0; i < arrayText.length; i++) {
-      const toAnalyze = arrayText[i];
-  
-      if (Array.isArray(toAnalyze)) {
-        // Skip processing here, it will be handled as details for the previous item
-      } else {
-        const nextToAnalyze = arrayText[i + 1];
-        const hasDetails = Array.isArray(nextToAnalyze);
-  
-        if (hasDetails) {
-          const isOneWord = toAnalyze.split(" ").length === 1;
-  
-          if (isOneWord) {
-            const lastWord = toAnalyze;
-  
-            const clickableWord = createClickHtml(lastWord, level, (indexZ + "-" + i));
-            result.push(clickableWord);
+      for (let i = 0; i < text.length; i++) {
+        if (text[i] === '{') {
+          if (depth === 0) {
+            stack.push(currentText.trim());
+            currentText = '';
           } else {
-            const splitWords = splitLastWord(toAnalyze);
-            const allWordsExceptLastone = splitWords[0];
-            const lastWord = splitWords[1];
-  
-            const textNoClickable = createSimpleHtml(allWordsExceptLastone,level);
-            result.push(textNoClickable);
-  
-            const clickableWord = createClickHtml(lastWord, level, (indexZ + "-" + i));
-            result.push(clickableWord);
+            currentText += '{';
           }
-  
-          // Process the next level and add the details container
-          const subDetailsHtml = processHtml(nextToAnalyze, level + 1, (indexZ + "-" + i));
-          const detailsHtml = createHtmlDetails(subDetailsHtml, level, (indexZ + "-" + i));
-  
-          result.push(detailsHtml);
-          i++; // Increment to skip the next as it's already processed
+          depth++;
+        } else if (text[i] === '}') {
+          depth--;
+          if (depth === 0) {
+            stack.push(parseDetails(currentText));
+            currentText = '';
+          } else {
+            currentText += '}';
+          }
         } else {
-          const text = createSimpleHtml(toAnalyze, level);
-          result.push(text);
+          currentText += text[i];
         }
       }
+      if (currentText) stack.push(currentText.trim());
+
+      return stack;
     }
-  
-    return result.join(" ");
-  }
 
-function createHtmlDetails(subDetailsHtml, level, i) {
-  return `<div id="detail-${level}-${i}" class="detail" style="display:none; margin-left: ${
-    20 * (level + 1)
-  }px;">${subDetailsHtml}</div>`;
-}
+    function processHtml(arrayText, level = 0, indexZ = "0") {
+      const result = [];
 
-function createClickHtml(text, level, index) {
-  return `<span class="clickable tooltip level-${level}" onclick="toggleDetail('detail-${level}-${index}')" title="more details">${text}</span>`;
-}
+      for (let i = 0; i < arrayText.length; i++) {
+        const toAnalyze = arrayText[i];
 
-function splitLastWord(anyString) {
-  let words = anyString.split(" ");
-  let lastWord = words.pop();
-  let remainingWords = words.join(" ");
-  return [remainingWords, lastWord];
-}
+        if (Array.isArray(toAnalyze)) {
+          // Skip processing here, it will be handled as details for the previous item
+        } else {
+          const nextToAnalyze = arrayText[i + 1];
+          const hasDetails = Array.isArray(nextToAnalyze);
 
-function createSimpleHtml(text, level) {
-  return `<span class="level-${level}">${text}</span>`;
-}
+          if (hasDetails) {
+            const isOneWord = toAnalyze.split(" ").length === 1;
 
-// Toggle visibility of details
-function toggleDetail(detailId) {
-  const detailElement = document.getElementById(detailId);
-  detailElement.style.display =
-    detailElement.style.display === "none" ? "block" : "none";
-}
+            if (isOneWord) {
+              const lastWord = toAnalyze;
 
-</script>
+              const clickableWord = createClickHtml(lastWord, level, (indexZ + "-" + i));
+              result.push(clickableWord);
+            } else {
+              const splitWords = splitLastWord(toAnalyze);
+              const allWordsExceptLastone = splitWords[0];
+              const lastWord = splitWords[1];
+
+              const textNoClickable = createSimpleHtml(allWordsExceptLastone, level);
+              result.push(textNoClickable);
+
+              const clickableWord = createClickHtml(lastWord, level, (indexZ + "-" + i));
+              result.push(clickableWord);
+            }
+
+            // Process the next level and add the details container
+            const subDetailsHtml = processHtml(nextToAnalyze, level + 1, (indexZ + "-" + i));
+            const detailsHtml = createHtmlDetails(subDetailsHtml, level, (indexZ + "-" + i));
+
+            result.push(detailsHtml);
+            i++; // Increment to skip the next as it's already processed
+          } else {
+            const text = createSimpleHtml(toAnalyze, level);
+            result.push(text);
+          }
+        }
+      }
+
+      return result.join(" ");
+    }
+
+    function createHtmlDetails(subDetailsHtml, level, i) {
+      return `<div id="detail-${level}-${i}" class="detail" style="display:none; margin-left: ${20 * (level + 1)
+        }px;">${subDetailsHtml}</div>`;
+    }
+
+    function createClickHtml(text, level, index) {
+      const classStyle = `level-${level + 1}`
+      return `<span class="clickable tooltip ${classStyle}" onclick="toggleDetail('detail-${level}-${index}', this)" title="more details">${text}</span>`;
+    }
+
+    function splitLastWord(anyString) {
+      let words = anyString.split(" ");
+      let lastWord = words.pop();
+      let remainingWords = words.join(" ");
+      return [remainingWords, lastWord];
+    }
+
+    function createSimpleHtml(text, level) {
+      return `<span class="level-${level}">${text}</span>`;
+    }
+
+    // Toggle visibility of details
+    function toggleDetail(detailId, elem) {
+      const detailElement = document.getElementById(detailId);
+      const showDetails = detailElement.style.display === "none";
+
+      detailElement.style.display = showDetails ? "block" : "none";
+
+      elem.classList.toggle('clicked');
+    }
+
+  </script>
 </body>
+
 </html>
