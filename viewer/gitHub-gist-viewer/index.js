@@ -8,7 +8,7 @@ async function DencryptHtmlFromGitHubGist() {
 async function GetEncryptedContentFromGitHubGist() {
     try {
 
-        const gistUrl = document.getElementById('keyInput').value;
+        const gistUrl = document.getElementById('gitHubGistUrl').value;
         const response = await fetch(gistUrl);
 
         if (!response.ok) {
