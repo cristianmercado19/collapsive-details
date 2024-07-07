@@ -5,3 +5,7 @@
 .encryption{
     flex-direction: row;
 }
+
+#gitHubGistUrl {
+    width: 500px;
+}

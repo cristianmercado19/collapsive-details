@@ -20,7 +20,12 @@ function hideDecryptionSection() {
   document.getElementById('dencryption').style.display = 'none';
 }
 
-function DencryptHtml() {
+async function DencryptHtml() {
+
+  DecryptAndShowContent(window.encryptedHtml); 
+}
+
+function DecryptAndShowContent(encryptedHtml) {
   try {
     document.getElementById('content').innerHTML = "";
 
@@ -38,6 +43,7 @@ function DencryptHtml() {
     hideDecryptionSection();
 
   } catch (error) {
+    console.error('DencryptHtml Error: ', error)
     alert("Decryption failed or wrong key used.");
   }
   

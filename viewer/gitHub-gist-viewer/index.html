@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <title>Collapsible Details</title>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+    <link rel="stylesheet" href="..\..\styles.css">
+    <link rel="stylesheet" href="..\viewer.css">
+</head>
+
+<body>
+
+    <div class="main">
+        <div id="dencryption">
+            <label>URL:</label>
+            <input id="gitHubGistUrl" type="text" placeholder="Enter url of raw encripted email" title="eg. https://gist.githubusercontent.com/cristianmercado19/03f7581121bcc7744dc06ac89516284e/raw/711e1cf0205655b6985c7d1754e86ea15c6691dc/gistfile1.txt">
+            <br>
+            <br>
+            <br>
+            <br>
+            <label>Password:</label>
+            <input id="keyInput" type="text" placeholder="Enter decryption key">
+            <br>
+            <button id="dencrypt" onclick="DencryptHtmlFromGitHubGist()">Decrypt</button>
+            <br>
+            <hr>
+        </div>
+    
+        <div id="content" class="email-content"></div>
+    </div>
+    
+    <script src="..\viewer.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>
