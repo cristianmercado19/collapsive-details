@@ -133,3 +133,15 @@ function toggleDetail(detailId, elem) {
 
     elem.classList.toggle('clicked');
 }
+
+function closeInfoBox() {
+    document.getElementById('infoBox').style.display = 'none';
+
+    document.getElementById('open-info').style.display = 'block';
+}
+
+function openInfoBox() {
+    document.getElementById('infoBox').style.display = 'block';
+
+    document.getElementById('open-info').style.display = 'none';
+}

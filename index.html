@@ -6,21 +6,92 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  
+
   <title>Collapsible Details</title>
+
 
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
+  <div class="info-box" id="infoBox">
+    <h1>Project Instructions</h1>
+    <button class="close-info-btn" onclick="closeInfoBox()">Close</button>
+    <p>This project enables users to create dynamic HTML emails with interactive <code>{}</code> placeholders that can
+      be expanded or collapsed for detailed information as needed. The final email can be securely encrypted and shared
+      via GitHub Gist, allowing recipients to decrypt and explore the content interactively using a provided URL and
+      password.</p>
+
+    <h2>Example of the Email:</h2>
+    <pre>
+Hi,
+We are reminding you of your upcoming appointment on Friday { 
+  Appointment Details:
+- Time: 10.30
+- Location: Dublin Office
+}
+
+Remember to bring your documentation { You will need to bring a 
+  valid ID and your insurance card. Contact Info {If you have 
+    any questions or need to reschedule, please contact us at}.}
+
+We look forward to seeing you soon.
+
+Best regards, 
+    </pre>
+
+    <h2>Steps to Follow:</h2>
+    <ol>
+      <li><strong>Generate HTML:</strong>
+        <ul>
+          <li>Click the "Generate" button.</li>
+          <li>Review the generated HTML to ensure it displays correctly and supports user interactions.</li>
+        </ul>
+      </li>
+      <li><strong>Encrypt the HTML:</strong>
+        <ul>
+          <li>Enter a decryption key (password) in the input field.</li>
+          <li>Click the "Encrypt" button to generate the encrypted text.</li>
+        </ul>
+      </li>
+      <li><strong>Store Encrypted HTML in GitHub Gist:</strong>
+        <ul>
+          <li>Copy the encrypted text.</li>
+          <li>Go to <a href="https://gist.github.com/" target="_blank">GitHub Gist</a>.</li>
+          <li>Create a new Gist, paste the encrypted text, and save it.</li>
+          <li>Copy the generated Gist URL.</li>
+        </ul>
+      </li>
+      <li><strong>Share the URL and Password:</strong>
+        <ul>
+          <li>Provide the GitHub Gist URL and the decryption password to the intended recipient.</li>
+        </ul>
+      </li>
+      <li><strong>Recipient View the Email:</strong>
+        <ul>
+          <li>The recipient opens the <a
+              href="https://cristianmercado19.github.io/collapsive-details/viewer/gitHub-gist-viewer/index.html"
+              target="_blank">Collapsive Details viewer</a> specifically developed for GitHub Gist support.</li>
+          <li>They enter the GitHub Gist URL and the decryption password.</li>
+          <li>The email content is decrypted and displayed, allowing the recipient to interact with it.</li>
+        </ul>
+      </li>
+    </ol>
+
+    <button class="close-info-btn" onclick="closeInfoBox()">Close</button>
+
+  </div>
+
   <div class="email-container">
+    <button id="open-info" class="open-info-btn" onclick="openInfoBox()" style="display: none;">Info</button>
+
     <textarea id="emailContent"></textarea>
     <br>
-    <button onclick="generateEmail()">Generate</button>
+    <button id="generateEmail" onclick="generateEmail()">Generate</button>
 
     <div id="encryption">
-      <input id="keyInput" type="text" placeholder="Enter decryption key">
+      <input id="keyInput" type="text" placeholder="Enter password">
       <br>
       <button id="encrypt" onclick="encryptHtml()">Encrypt</button>
       <br>
