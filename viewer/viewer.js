@@ -55,11 +55,11 @@ function addToggleDetailsButton() {
   const toggleButton = document.createElement("button");
 
   toggleButton.id = "toggleDetailsButton";
-  toggleButton.className = "toggleButtonStyle shouldOpen";
+  toggleButton.className = "toggle-details shouldOpen";
   toggleButton.textContent = "Open Details";
 
   document.body.appendChild(toggleButton);
-  
+
   toggleButton.addEventListener("click", toggleDetails);
 }
 

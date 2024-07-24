@@ -14,7 +14,7 @@
     background-color: #45a049;   
 }
 
-#toggleDetailsButton {
+.toggle-details {
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -25,4 +25,18 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.shouldOpen {
+    background-color: #ffffffdb;
+    color: #0059ff;
+    border: 2px solid #0059ff;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.shouldClose {
+    background-color: #ffffffdb;
+    color: #ff0000;
+    border: 2px solid #f44336;
+    transition: background-color 0.3s, color 0.3s;
 }
