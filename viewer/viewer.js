@@ -42,9 +42,60 @@ function DecryptAndShowContent(encryptedHtml) {
 
     hideDecryptionSection();
 
+    addToggleDetailsButton()
+
   } catch (error) {
     console.error('DencryptHtml Error: ', error)
     alert("Decryption failed or wrong key used.");
   }
   
 }
+
+function addToggleDetailsButton() {
+  const toggleButton = document.createElement("button");
+
+  toggleButton.id = "toggleDetailsButton";
+  toggleButton.className = "toggleButtonStyle shouldOpen";
+  toggleButton.textContent = "Open Details";
+
+  document.body.appendChild(toggleButton);
+  
+  toggleButton.addEventListener("click", toggleDetails);
+}
+
+function toggleDetails() {
+  const toggleButton = document.getElementById('toggleDetailsButton');
+  const shouldOpenDetails = toggleButton.classList.contains('shouldOpen')
+
+  if (shouldOpenDetails) {
+    openAllDetails();
+    toggleButton.textContent = "Close Details";
+    toggleButton.classList.remove("shouldOpen");
+    toggleButton.classList.add("shouldClose");
+  } else {
+    closeAllDetails();
+    toggleButton.textContent = "Open Details";
+    toggleButton.classList.add("shouldOpen");
+    toggleButton.classList.remove("shouldClose");
+  }
+}
+
+
+function openAllDetails() {
+  const clickableSpans = document.querySelectorAll('span.clickable:not(.clicked)');
+  callOnClickinAllElements(clickableSpans);
+}
+
+function closeAllDetails() {
+  const clickableSpans = document.querySelectorAll('span.clickable.clicked');
+  callOnClickinAllElements(clickableSpans);
+}
+
+function callOnClickinAllElements(clickableSpans) {
+  clickableSpans.forEach(span => {
+    if (typeof span.onclick === "function") {
+      span.onclick();
+    }
+  });
+}
+
